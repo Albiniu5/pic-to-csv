@@ -7,10 +7,12 @@ import TermsOfService from './pages/TermsOfService';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import HowItWorks from './pages/HowItWorks';
+import Analytics from './components/Analytics';
 
 function App() {
   return (
     <BrowserRouter>
+      <Analytics />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

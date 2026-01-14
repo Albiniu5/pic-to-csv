@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, FileText, Download, Loader2 } from 'lucide-react';
+import { Upload, FileText, Download, Loader2, Bot, Zap, Lock, Smartphone } from 'lucide-react';
 import { convertJsonToCsv, downloadCsv } from '../utils/csvUtils';
 import { extractData } from '../services/aiService';
 import TableEditor from '../components/TableEditor';
@@ -232,29 +232,28 @@ export default function Home() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <header className="mb-12 text-center animate-in fade-in slide-in-from-top-4 duration-700">
-                <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-slate-900">
-                    Unstructured Data to <span className="text-indigo-600">Excel</span>
+        <div className="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <header className="mb-16 text-center animate-in fade-in slide-in-from-top-4 duration-700">
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-brand-dark">
+                    Unstructured Data to <span className="text-brand-blue">Excel</span>
                 </h1>
-                <p className="text-slate-600 text-lg sm:text-xl max-w-2xl mx-auto">
+                <p className="text-brand-muted text-lg sm:text-lg max-w-2xl mx-auto leading-relaxed">
                     Turn your screenshots, messy PDFs, and images into clean, formatted Excel sheets in seconds using AI.
                 </p>
             </header>
 
-            <main className="space-y-8">
+            <main className="space-y-10">
                 {/* Error Message */}
                 {error && (
-                    <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-in fade-in slide-in-from-top-2">
+                    <div className="bg-red-50 border border-red-200 p-4 rounded-lg animate-in fade-in slide-in-from-top-2">
                         <div className="flex">
                             <div className="flex-shrink-0">
-                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                 </svg>
                             </div>
                             <div className="ml-3">
-                                <p className="text-sm text-red-700 font-medium">Error</p>
-                                <p className="text-sm text-red-600 mt-1">{error}</p>
+                                <p className="text-sm text-red-700 font-medium">{error}</p>
                             </div>
                         </div>
                     </div>
@@ -262,7 +261,7 @@ export default function Home() {
 
                 {/* File Upload Section */}
                 <div
-                    className="border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center bg-white hover:border-indigo-500 hover:bg-indigo-50/10 transition-all cursor-pointer shadow-sm group"
+                    className="border-2 border-dashed border-gray-200 rounded-xl p-16 text-center bg-white hover:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm group"
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
                     onClick={() => document.getElementById('fileInput').click()}
@@ -275,20 +274,20 @@ export default function Home() {
                         onChange={handleFileSelect}
                     />
                     <div className="flex flex-col items-center gap-6">
-                        <div className="p-5 bg-indigo-50 text-indigo-600 rounded-full group-hover:scale-110 transition-transform duration-300">
-                            <Upload size={40} />
+                        <div className="p-4 bg-blue-50 text-brand-blue rounded-full group-hover:scale-105 transition-transform duration-300">
+                            <Upload size={32} strokeWidth={2} />
                         </div>
                         <div>
-                            <p className="text-xl font-semibold text-slate-800 mb-2">
-                                {file ? file.name : "Drop your image or PDF here"}
+                            <p className="text-xl font-semibold text-brand-dark mb-2">
+                                {file ? file.name : "Drop or Select File"}
                             </p>
-                            <p className="text-slate-500">
-                                Supports JPG, PNG, PDF • Max 10MB
+                            <p className="text-brand-muted text-sm">
+                                JPG, PNG, PDF supported up to 10MB
                             </p>
                         </div>
                         {!file && (
-                            <button className="bg-white text-indigo-600 border border-indigo-200 px-4 py-2 rounded-lg font-medium hover:bg-indigo-50 transition-colors">
-                                Or click to browse
+                            <button className="bg-white text-brand-dark border border-gray-200 px-5 py-2.5 rounded-lg font-medium hover:border-brand-blue hover:text-brand-blue transition-colors shadow-sm">
+                                Browse Files
                             </button>
                         )}
                     </div>
@@ -296,99 +295,83 @@ export default function Home() {
 
                 {/* Action Button */}
                 {file && !data && (
-                    <div className="text-center animate-in fade-in zoom-in duration-300">
+                    <div className="text-center animate-in fade-in zoom-in duration-300 py-4">
                         <button
                             onClick={handleConvert}
                             disabled={loading}
-                            className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-3 mx-auto"
+                            className="bg-brand-blue hover:bg-blue-700 text-white text-lg font-medium py-3.5 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-3 mx-auto"
                         >
                             {loading ? (
                                 <>
-                                    <Loader2 className="animate-spin" /> Extracting Data...
+                                    <Loader2 className="animate-spin" /> Processing...
                                 </>
                             ) : (
                                 <>
-                                    <FileText className="w-6 h-6" /> Convert Now
+                                    <FileText className="w-5 h-5" /> Convert to Excel
                                 </>
                             )}
                         </button>
-                        <p className="mt-4 text-sm text-slate-400">Powered by Advanced AI Models</p>
                     </div>
                 )}
 
                 {/* Results Section - Global Actions */}
                 {data && data.length > 0 && (
-                    <div className="flex flex-wrap justify-end gap-3 mb-6 sticky top-20 z-10 bg-slate-50/90 p-2 backdrop-blur-sm rounded-lg border border-slate-200/50">
+                    <div className="flex flex-wrap justify-end gap-3 mb-6 sticky top-20 z-10 bg-white/90 p-3 backdrop-blur-sm rounded-lg border border-gray-100 shadow-sm">
                         <button
                             onClick={() => handleDownloadMerged('csv')}
-                            className="bg-slate-700 hover:bg-slate-800 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-colors flex items-center gap-2"
+                            className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"
                             title="Download as merged CSV"
                         >
-                            <Download size={18} />
+                            <Download size={16} />
                             {selectedTables.size > 0
-                                ? `CSV: Selected (${selectedTables.size})`
-                                : "CSV: All Tables"}
+                                ? `CSV (${selectedTables.size})`
+                                : "CSV All"}
                         </button>
                         <button
                             onClick={() => handleDownloadMerged('xlsx')}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-colors flex items-center gap-2"
-                            title="Download as Excel workbook (each table = separate sheet)"
+                            className="bg-brand-blue hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                            title="Download as Excel workbook"
                         >
-                            <Download size={18} />
+                            <Download size={16} />
                             {selectedTables.size > 0
-                                ? `Excel: Selected (${selectedTables.size})`
-                                : "Excel: All Tables"}
+                                ? `Excel (${selectedTables.size})`
+                                : "Excel All"}
                         </button>
                         <button
                             onClick={() => handleDownloadMerged('pdf')}
-                            className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-colors flex items-center gap-2"
-                            title="Download as PDF (each table on new page)"
+                            className="bg-white border border-red-100 hover:bg-red-50 text-red-600 font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                            title="Download as PDF"
                         >
-                            <Download size={18} />
+                            <Download size={16} />
                             {selectedTables.size > 0
-                                ? `PDF: Selected (${selectedTables.size})`
-                                : "PDF: All Tables"}
+                                ? `PDF (${selectedTables.size})`
+                                : "PDF All"}
                         </button>
                     </div>
                 )}
 
                 {/* Results Section - Table List */}
                 {data && data.map((table, tableIdx) => (
-                    <div key={tableIdx} className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 mb-8">
-                        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 gap-4">
+                    <div key={tableIdx} className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 mb-8">
+                        <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50/50 gap-4">
                             <div className="flex items-center gap-4">
                                 <input
                                     type="checkbox"
                                     checked={selectedTables.has(tableIdx)}
                                     onChange={() => toggleTableSelection(tableIdx)}
-                                    className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300 cursor-pointer"
+                                    className="w-5 h-5 text-brand-blue rounded focus:ring-blue-500 border-gray-300 cursor-pointer"
                                 />
                                 <div>
-                                    <h2 className="text-xl font-bold text-slate-800">{table.name || `Table ${tableIdx + 1}`}</h2>
-                                    <p className="text-sm text-slate-500 mt-1">Drag cols/rows to reorder. Edit freely.</p>
+                                    <h2 className="text-lg font-bold text-brand-dark">{table.name || `Table ${tableIdx + 1}`}</h2>
                                 </div>
                             </div>
                             <div className="flex gap-2 self-end sm:self-auto">
                                 <button
                                     onClick={() => handleDownload(tableIdx, 'csv')}
-                                    className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium py-2 px-3 rounded-lg shadow-sm transition-colors flex items-center gap-1"
-                                    title="Download as CSV"
+                                    className="text-gray-500 hover:text-brand-dark p-2 transition-colors"
+                                    title="Download CSV"
                                 >
-                                    <Download size={16} /> CSV
-                                </button>
-                                <button
-                                    onClick={() => handleDownload(tableIdx, 'xlsx')}
-                                    className="bg-blue-50 border border-blue-100 hover:bg-blue-100 text-blue-700 text-sm font-medium py-2 px-3 rounded-lg shadow-sm transition-colors flex items-center gap-1"
-                                    title="Download as Excel"
-                                >
-                                    <Download size={16} /> Excel
-                                </button>
-                                <button
-                                    onClick={() => handleDownload(tableIdx, 'pdf')}
-                                    className="bg-red-50 border border-red-100 hover:bg-red-100 text-red-700 text-sm font-medium py-2 px-3 rounded-lg shadow-sm transition-colors flex items-center gap-1"
-                                    title="Download as PDF"
-                                >
-                                    <Download size={16} /> PDF
+                                    <Download size={18} />
                                 </button>
                             </div>
                         </div>
@@ -401,6 +384,94 @@ export default function Home() {
                     </div>
                 ))}
             </main>
+
+            {/* Features Section */}
+            <section className="py-24 border-t border-brand-border mt-20">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-bold text-brand-dark">Why PicToCSV?</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto px-4">
+                    <div className="text-center">
+                        <div className="bg-blue-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-brand-blue">
+                            <Bot size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold text-brand-dark mb-3">AI-Powered Extraction</h3>
+                        <p className="text-brand-muted leading-relaxed">
+                            Our AI understands context, handwriting, and complex table structures, extracting data with high precision where traditional OCR fails.
+                        </p>
+                    </div>
+
+                    <div className="text-center">
+                        <div className="bg-amber-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-amber-600">
+                            <Zap size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold text-brand-dark mb-3">Lightning Fast</h3>
+                        <p className="text-brand-muted leading-relaxed">
+                            Get comprehensive Excel spreadsheets from your images or PDFs in seconds. Save hours of manual data entry.
+                        </p>
+                    </div>
+
+                    <div className="text-center">
+                        <div className="bg-green-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-green-600">
+                            <Lock size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold text-brand-dark mb-3">100% Private</h3>
+                        <p className="text-brand-muted leading-relaxed">
+                            Your documents are processed securely in-memory and are permanently deleted immediately after the analysis is complete.
+                        </p>
+                    </div>
+
+                    <div className="text-center">
+                        <div className="bg-purple-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-purple-600">
+                            <Smartphone size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold text-brand-dark mb-3">Works Everywhere</h3>
+                        <p className="text-brand-muted leading-relaxed">
+                            Fully responsive and cloud-based. Extract data on any device - desktop, tablet, or mobile. No installation needed.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* FAQ Section */}
+            <section className="py-24 border-t border-brand-border bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-3xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-bold text-brand-dark">Frequently Asked Questions</h2>
+                    </div>
+
+                    <div className="space-y-12">
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">How does the image to Excel conversion work?</h3>
+                            <p className="text-brand-muted leading-relaxed">
+                                Unlike simple OCR tools that just read text, our AI analyzes the visual structure of your document to identify rows, columns, and headers, reconstructing them perfectly into an editable Excel file.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">Is my data safe?</h3>
+                            <p className="text-brand-muted leading-relaxed">
+                                Yes, absolutely. We prioritize your privacy. Files uploaded to PicToCSV are processed in temporary memory and are permanently deleted immediately after the analysis is complete. We do not store, share, or use your documents to train our models.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">What file formats do you support?</h3>
+                            <p className="text-brand-muted leading-relaxed">
+                                We currently support PDF documents, standard image formats (JPG, PNG), and text files. You can also paste text directly.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">Is this tool free?</h3>
+                            <p className="text-brand-muted leading-relaxed">
+                                Yes, PicToCSV is currently free to use for standard conversions. We optimize for efficiency to keep costs low and pass the value to you.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }

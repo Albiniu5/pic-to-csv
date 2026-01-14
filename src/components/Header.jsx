@@ -11,15 +11,15 @@ export default function Header() {
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
-        <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <nav className="bg-white border-b border-brand-border sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
+                <div className="flex justify-between h-16 items-center">
                     <div className="flex items-center">
                         <Link to="/" className="flex items-center gap-2">
-                            <div className="bg-indigo-600 text-white p-1.5 rounded-lg">
+                            <div className="bg-brand-blue text-white p-1.5 rounded-lg">
                                 <FileSpreadsheet size={24} />
                             </div>
-                            <span className="font-bold text-xl text-slate-900 tracking-tight">PicToCSV</span>
+                            <span className="font-bold text-xl text-brand-dark tracking-tight">PicToCSV</span>
                         </Link>
                     </div>
 
@@ -30,7 +30,7 @@ export default function Header() {
                         <NavLink to="/faq" isActive={isActive('/faq')}>FAQ</NavLink>
                         <Link
                             to="/"
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                            className="bg-brand-blue hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-sm hover:shadow-md"
                         >
                             Start Converting
                         </Link>
@@ -40,7 +40,7 @@ export default function Header() {
                     <div className="flex items-center md:hidden">
                         <button
                             onClick={toggleMenu}
-                            className="text-slate-600 hover:text-slate-900 p-2"
+                            className="text-brand-muted hover:text-brand-dark p-2"
                             aria-label="Toggle menu"
                         >
                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -51,7 +51,7 @@ export default function Header() {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="md:hidden bg-white border-b border-slate-200">
+                <div className="md:hidden bg-white border-b border-brand-border">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                         <MobileNavLink to="/" onClick={toggleMenu} isActive={isActive('/')}>Home</MobileNavLink>
                         <MobileNavLink to="/how-it-works" onClick={toggleMenu} isActive={isActive('/how-it-works')}>How It Works</MobileNavLink>
@@ -69,7 +69,7 @@ function NavLink({ to, children, isActive }) {
     return (
         <Link
             to={to}
-            className={`text-sm font-medium transition-colors ${isActive ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'
+            className={`text-base font-normal transition-colors ${isActive ? 'text-brand-blue' : 'text-brand-dark hover:text-brand-blue'
                 }`}
         >
             {children}
@@ -83,8 +83,8 @@ function MobileNavLink({ to, children, onClick, isActive }) {
             to={to}
             onClick={onClick}
             className={`block px-3 py-2 rounded-md text-base font-medium ${isActive
-                    ? 'bg-indigo-50 text-indigo-700'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-brand-blue'
+                : 'text-brand-muted hover:bg-slate-50 hover:text-brand-dark'
                 }`}
         >
             {children}

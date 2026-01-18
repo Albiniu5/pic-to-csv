@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
-import { Upload, FileText, Download, Loader2, Bot, Zap, Lock, Smartphone } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Upload, FileText, Download, Loader2, Bot, Zap, Lock, Smartphone, Camera } from 'lucide-react';
 import { convertJsonToCsv, downloadCsv } from '../utils/csvUtils';
 import { extractData } from '../services/aiService';
 import TableEditor from '../components/TableEditor';
+import FloatingActionButton from '../components/FloatingActionButton';
+import InAppTips from '../components/InAppTips';
+import SocialProof from '../components/SocialProof';
+import ProgressIndicator from '../components/ProgressIndicator';
+import ProgressAnimation from '../components/ProgressAnimation';
+import PostConversionFeedback from '../components/PostConversionFeedback';
+import AchievementBadge from '../components/AchievementBadge';
+import MobileErrorHandler from '../components/MobileErrorHandler';
+import OnboardingTutorial from '../components/OnboardingTutorial';
+import UploadProgress from '../components/UploadProgress';
+import FeedbackSummary from '../components/FeedbackSummary';
+import { getUserData, incrementConversions, awardPoints } from '../utils/gamification';
+import { notifyOwnerConversion, notifyOwnerDownload } from '../services/notificationService';
 
 export default function Home() {
     const [file, setFile] = useState(null);
@@ -10,6 +23,13 @@ export default function Home() {
     const [data, setData] = useState(null);
     const [selectedTables, setSelectedTables] = useState(new Set());
     const [error, setError] = useState('');
+    const [showFeedback, setShowFeedback] = useState(false);
+    const [showTip, setShowTip] = useState(true);
+    const [showBadge, setShowBadge] = useState(null);
+    const [progressSteps, setProgressSteps] = useState([]);
+    const [userStats, setUserStats] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -23,7 +43,31 @@ export default function Home() {
 
     const handleFileSelect = (e) => {
         const selectedFile = e.target.files[0];
-        if (selectedFile) processFile(selectedFile);
+        if (selectedFile) {
+            setIsUploading(true);
+            setUploadProgress(0);
+            
+            // Simulate upload progress (in real app, this would come from actual upload)
+            const progressInterval = setInterval(() => {
+                setUploadProgress((prev) => {
+                    if (prev >= 90) {
+                        clearInterval(progressInterval);
+                        setIsUploading(false);
+                        return 100;
+                    }
+                    return prev + 10;
+                });
+            }, 100);
+            
+            setTimeout(() => {
+                processFile(selectedFile);
+                setUploadProgress(100);
+                setTimeout(() => {
+                    setIsUploading(false);
+                    setUploadProgress(0);
+                }, 500);
+            }, 1000);
+        }
     };
 
     const processFile = (file) => {
@@ -37,15 +81,60 @@ export default function Home() {
 
         setLoading(true);
         setError('');
+        
+        // Set progress steps for visual feedback
+        setProgressSteps([
+            'Scanning document...',
+            'Detecting tables...',
+            'Extracting data...',
+            'Finalizing results...'
+        ]);
 
         try {
             const result = await extractData(file);
             setData(result);
+            
+            // Gamification: Award points and track conversions
+            awardPoints(10, 'Conversion completed');
+            const userData = incrementConversions();
+            setUserStats(userData);
+            
+            // Notify owner of conversion
+            notifyOwnerConversion({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                tablesCount: result.length,
+            });
+            
+            // Show achievement badge if new one was earned
+            if (userData.hasNewBadges && userData.newBadges.length > 0) {
+                // Show the most recent badge with a slight delay
+                setTimeout(() => {
+                    setShowBadge(userData.newBadges[userData.newBadges.length - 1]);
+                }, 500);
+            }
+            
+            // Show feedback survey after successful conversion
+            setTimeout(() => {
+                setShowFeedback(true);
+            }, 1500);
         } catch (err) {
             setError(err.message || 'Failed to convert file. Please try again.');
         } finally {
             setLoading(false);
+            setProgressSteps([]);
         }
+    };
+
+    // Initialize user stats on mount
+    useEffect(() => {
+        setUserStats(getUserData());
+    }, []);
+
+    const handleCameraSelect = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) processFile(selectedFile);
     };
 
     // Handle download for a specific table
@@ -53,16 +142,19 @@ export default function Home() {
         if (!data || !data[tableIndex]) return;
         const table = data[tableIndex];
 
-        try {
+                try {
             if (format === 'xlsx') {
                 const { downloadXlsx } = await import('../utils/csvUtils');
                 await downloadXlsx(table.data, `${table.name || `table_${tableIndex + 1}`}.xlsx`, table.name);
+                notifyOwnerDownload({ format: 'xlsx', tablesCount: 1, fileName: `${table.name || `table_${tableIndex + 1}`}.xlsx` });
             } else if (format === 'pdf') {
                 const { downloadPdf } = await import('../utils/csvUtils');
                 await downloadPdf(table.data, `${table.name || `table_${tableIndex + 1}`}.pdf`, table.name);
+                notifyOwnerDownload({ format: 'pdf', tablesCount: 1, fileName: `${table.name || `table_${tableIndex + 1}`}.pdf` });
             } else {
                 const csv = convertJsonToCsv(table.data);
                 downloadCsv(csv, `${table.name || `table_${tableIndex + 1}`}.csv`);
+                notifyOwnerDownload({ format: 'csv', tablesCount: 1, fileName: `${table.name || `table_${tableIndex + 1}`}.csv` });
             }
         } catch (error) {
             console.error("Download failed:", error);
@@ -135,6 +227,13 @@ export default function Home() {
 
             const filename = selectedTables.size > 0 ? 'selected_tables.xlsx' : 'all_tables.xlsx';
             XLSX.writeFile(workbook, filename);
+            
+            // Notify owner of download
+            notifyOwnerDownload({
+                format: 'xlsx',
+                tablesCount: tablesToDownload.length,
+                fileName: filename,
+            });
         } else if (format === 'pdf') {
             // PDF: Multiple tables in one document
             const { jsPDF } = await import('jspdf');
@@ -188,6 +287,13 @@ export default function Home() {
 
             const filename = selectedTables.size > 0 ? 'selected_tables.pdf' : 'all_tables.pdf';
             doc.save(filename);
+            
+            // Notify owner of download
+            notifyOwnerDownload({
+                format: 'pdf',
+                tablesCount: tablesToDownload.length,
+                fileName: filename,
+            });
         } else {
             // CSV: Merged with comment headers
             let mergedCsv = '';
@@ -201,6 +307,13 @@ export default function Home() {
 
             const filename = selectedTables.size > 0 ? 'selected_tables_merged.csv' : 'all_tables_merged.csv';
             downloadCsv(mergedCsv, filename);
+            
+            // Notify owner of download
+            notifyOwnerDownload({
+                format: 'csv',
+                tablesCount: tablesToDownload.length,
+                fileName: filename,
+            });
         }
     };
 
@@ -232,36 +345,43 @@ export default function Home() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-            <header className="mb-16 text-center animate-in fade-in slide-in-from-top-4 duration-700">
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-brand-dark">
+        <div className="max-w-4xl mx-auto py-8 md:py-16 px-4 sm:px-6 lg:px-8">
+            {/* Social Proof Banner */}
+            <SocialProof />
+            
+            {/* Feedback Summary */}
+            <FeedbackSummary />
+
+            <header className="mb-12 md:mb-16 text-center animate-in fade-in slide-in-from-top-4 duration-700">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 md:mb-6 text-brand-dark">
                     Unstructured Data to <span className="text-brand-blue">Excel</span>
                 </h1>
-                <p className="text-brand-muted text-lg sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                <p className="text-brand-muted text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
                     Turn your screenshots, messy PDFs, and images into clean, formatted Excel sheets in seconds using AI.
                 </p>
             </header>
 
-            <main className="space-y-10">
-                {/* Error Message */}
-                {error && (
-                    <div className="bg-red-50 border border-red-200 p-4 rounded-lg animate-in fade-in slide-in-from-top-2">
-                        <div className="flex">
-                            <div className="flex-shrink-0">
-                                <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                            </div>
-                            <div className="ml-3">
-                                <p className="text-sm text-red-700 font-medium">{error}</p>
-                            </div>
-                        </div>
-                    </div>
+            <main className="space-y-6 md:space-y-10">
+                {/* Upload Progress */}
+                {isUploading && file && (
+                    <UploadProgress progress={uploadProgress} fileName={file.name} />
                 )}
 
-                {/* File Upload Section */}
+                {/* Enhanced Mobile-Friendly Error Handler */}
+                {error && (
+                    <MobileErrorHandler
+                        error={error}
+                        onRetry={() => {
+                            setError('');
+                            if (file) handleConvert();
+                        }}
+                        onDismiss={() => setError('')}
+                    />
+                )}
+
+                {/* File Upload Section - Mobile Optimized */}
                 <div
-                    className="border-2 border-dashed border-gray-200 rounded-xl p-16 text-center bg-white hover:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm group"
+                    className="border-2 border-dashed border-gray-200 rounded-xl p-8 md:p-16 text-center bg-white hover:border-brand-blue hover:bg-slate-50 transition-all cursor-pointer shadow-sm group"
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
                     onClick={() => document.getElementById('fileInput').click()}
@@ -273,44 +393,74 @@ export default function Home() {
                         accept="image/*,.pdf,.txt"
                         onChange={handleFileSelect}
                     />
-                    <div className="flex flex-col items-center gap-6">
-                        <div className="p-4 bg-blue-50 text-brand-blue rounded-full group-hover:scale-105 transition-transform duration-300">
-                            <Upload size={32} strokeWidth={2} />
+                    <input
+                        type="file"
+                        id="cameraInput"
+                        className="hidden"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handleCameraSelect}
+                    />
+                    <div className="flex flex-col items-center gap-4 md:gap-6">
+                        <div className="p-3 md:p-4 bg-blue-50 text-brand-blue rounded-full group-hover:scale-105 transition-transform duration-300">
+                            <Upload size={28} strokeWidth={2} className="md:w-8 md:h-8" />
                         </div>
                         <div>
-                            <p className="text-xl font-semibold text-brand-dark mb-2">
+                            <p className="text-lg md:text-xl font-semibold text-brand-dark mb-2">
                                 {file ? file.name : "Drop or Select File"}
                             </p>
-                            <p className="text-brand-muted text-sm">
+                            <p className="text-brand-muted text-xs md:text-sm">
                                 JPG, PNG, PDF supported up to 10MB
                             </p>
                         </div>
                         {!file && (
-                            <button className="bg-white text-brand-dark border border-gray-200 px-5 py-2.5 rounded-lg font-medium hover:border-brand-blue hover:text-brand-blue transition-colors shadow-sm">
-                                Browse Files
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                                <button 
+                                    className="bg-white text-brand-dark border border-gray-200 px-6 py-3 md:px-5 md:py-2.5 rounded-lg font-medium hover:border-brand-blue hover:text-brand-blue transition-colors shadow-sm min-h-[48px] min-w-[140px] touch-manipulation"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        document.getElementById('fileInput').click();
+                                    }}
+                                >
+                                    Browse Files
+                                </button>
+                                <button
+                                    className="bg-brand-blue text-white border border-brand-blue px-6 py-3 md:px-5 md:py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm min-h-[48px] min-w-[140px] touch-manipulation flex items-center justify-center gap-2"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        document.getElementById('cameraInput').click();
+                                    }}
+                                >
+                                    <Camera size={18} /> Camera
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
 
-                {/* Action Button */}
+                {/* In-App Tips - Moved below file upload */}
+                {showTip && !file && <InAppTips variant="card" onDismiss={() => setShowTip(false)} />}
+
+                {/* Action Button - Mobile Optimized */}
                 {file && !data && (
                     <div className="text-center animate-in fade-in zoom-in duration-300 py-4">
-                        <button
-                            onClick={handleConvert}
-                            disabled={loading}
-                            className="bg-brand-blue hover:bg-blue-700 text-white text-lg font-medium py-3.5 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-3 mx-auto"
-                        >
-                            {loading ? (
-                                <>
-                                    <Loader2 className="animate-spin" /> Processing...
-                                </>
-                            ) : (
-                                <>
-                                    <FileText className="w-5 h-5" /> Convert to Excel
-                                </>
-                            )}
-                        </button>
+                        {loading ? (
+                            <div>
+                                {progressSteps.length > 0 ? (
+                                    <ProgressIndicator steps={progressSteps} />
+                                ) : (
+                                    <ProgressAnimation message="AI is extracting your data..." />
+                                )}
+                            </div>
+                        ) : (
+                            <button
+                                onClick={handleConvert}
+                                disabled={loading}
+                                className="bg-brand-blue hover:bg-blue-700 text-white text-base md:text-lg font-medium py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-3 mx-auto min-h-[56px] min-w-[200px] touch-manipulation"
+                            >
+                                <FileText className="w-5 h-5" /> Convert to Excel
+                            </button>
+                        )}
                     </div>
                 )}
 
@@ -361,8 +511,18 @@ export default function Home() {
                                     onChange={() => toggleTableSelection(tableIdx)}
                                     className="w-5 h-5 text-brand-blue rounded focus:ring-blue-500 border-gray-300 cursor-pointer"
                                 />
-                                <div>
-                                    <h2 className="text-lg font-bold text-brand-dark">{table.name || `Table ${tableIdx + 1}`}</h2>
+                                <div className="flex-1">
+                                    <input
+                                        type="text"
+                                        value={table.name || `Table ${tableIdx + 1}`}
+                                        onChange={(e) => {
+                                            const newData = [...data];
+                                            newData[tableIdx] = { ...newData[tableIdx], name: e.target.value };
+                                            setData(newData);
+                                        }}
+                                        className="text-lg font-bold text-brand-dark bg-transparent border-b-2 border-transparent hover:border-gray-300 focus:border-brand-blue focus:outline-none px-1 py-1 transition-colors w-full max-w-xs"
+                                        placeholder={`Table ${tableIdx + 1}`}
+                                    />
                                 </div>
                             </div>
                             <div className="flex gap-2 self-end sm:self-auto">
@@ -472,6 +632,28 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+
+            {/* Floating Action Button - Mobile Only */}
+            <FloatingActionButton 
+                onFileSelect={handleFileSelect}
+                onCameraClick={handleCameraSelect}
+            />
+
+            {/* Post-Conversion Feedback */}
+            {showFeedback && (
+                <PostConversionFeedback onClose={() => setShowFeedback(false)} />
+            )}
+
+            {/* Achievement Badge Display */}
+            {showBadge && (
+                <AchievementBadge
+                    badge={showBadge}
+                    onDismiss={() => setShowBadge(null)}
+                />
+            )}
+
+            {/* Onboarding Tutorial */}
+            <OnboardingTutorial onComplete={() => {}} />
         </div>
     );
 }

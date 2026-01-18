@@ -41,7 +41,45 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-brand-border mt-12 pt-8 text-center text-sm text-brand-muted">
+                {/* Related Tools Section - Enhanced Prominence */}
+                <div className="border-t-2 border-brand-blue bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mt-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="bg-brand-blue text-white p-2 rounded-lg">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-brand-dark mb-1">Related Tools</h3>
+                            <p className="text-brand-muted text-sm">Explore our AI-powered document tools</p>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 hover:shadow-md transition-shadow">
+                        <a 
+                            href="https://comparedocsai.com/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between group"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="bg-blue-100 p-2 rounded-lg">
+                                    <svg className="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div className="font-semibold text-brand-dark group-hover:text-brand-blue transition-colors">Compare Docs AI</div>
+                                    <div className="text-xs text-brand-muted">AI-powered document comparison and analysis</div>
+                                </div>
+                            </div>
+                            <svg className="w-5 h-5 text-brand-muted group-hover:text-brand-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div className="border-t border-brand-border mt-8 pt-8 text-center text-sm text-brand-muted">
                     <p>&copy; {currentYear} PicToCSV. All rights reserved.</p>
                 </div>
             </div>

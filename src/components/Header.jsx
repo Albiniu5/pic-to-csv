@@ -24,13 +24,23 @@ export default function Header() {
                     </div>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex items-center space-x-8">
+                    <div className="hidden md:flex items-center space-x-8" style={{ lineHeight: 'normal' }}>
                         <NavLink to="/" isActive={isActive('/')}>Home</NavLink>
                         <NavLink to="/how-it-works" isActive={isActive('/how-it-works')}>How It Works</NavLink>
                         <NavLink to="/faq" isActive={isActive('/faq')}>FAQ</NavLink>
+                        <a
+                            href="https://comparedocsai.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-base font-normal text-brand-dark hover:text-brand-blue transition-colors"
+                            style={{ display: 'inline-flex', alignItems: 'center', height: '100%' }}
+                        >
+                            Compare Docs
+                        </a>
                         <Link
                             to="/"
                             className="bg-brand-blue hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-sm hover:shadow-md"
+                            style={{ display: 'inline-flex', alignItems: 'center' }}
                         >
                             Start Converting
                         </Link>
@@ -56,6 +66,15 @@ export default function Header() {
                         <MobileNavLink to="/" onClick={toggleMenu} isActive={isActive('/')}>Home</MobileNavLink>
                         <MobileNavLink to="/how-it-works" onClick={toggleMenu} isActive={isActive('/how-it-works')}>How It Works</MobileNavLink>
                         <MobileNavLink to="/faq" onClick={toggleMenu} isActive={isActive('/faq')}>FAQ</MobileNavLink>
+                        <a
+                            href="https://pictocsv.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block px-3 py-2 rounded-md text-base font-medium text-brand-muted hover:bg-slate-50 hover:text-brand-dark"
+                            onClick={toggleMenu}
+                        >
+                            Compare Docs AI
+                        </a>
                         <MobileNavLink to="/privacy" onClick={toggleMenu} isActive={isActive('/privacy')}>Privacy Policy</MobileNavLink>
                         <MobileNavLink to="/contact" onClick={toggleMenu} isActive={isActive('/contact')}>Contact</MobileNavLink>
                     </div>
@@ -71,6 +90,7 @@ function NavLink({ to, children, isActive }) {
             to={to}
             className={`text-base font-normal transition-colors ${isActive ? 'text-brand-blue' : 'text-brand-dark hover:text-brand-blue'
                 }`}
+            style={{ display: 'inline-flex', alignItems: 'center', height: '100%', lineHeight: 'normal' }}
         >
             {children}
         </Link>

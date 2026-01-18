@@ -14,6 +14,7 @@ import MobileErrorHandler from '../components/MobileErrorHandler';
 import OnboardingTutorial from '../components/OnboardingTutorial';
 import UploadProgress from '../components/UploadProgress';
 import FeedbackSummary from '../components/FeedbackSummary';
+import ContactModal from '../components/ContactModal';
 import { getUserData, incrementConversions, awardPoints } from '../utils/gamification';
 import { notifyOwnerConversion, notifyOwnerDownload } from '../services/notificationService';
 
@@ -30,6 +31,7 @@ export default function Home() {
     const [userStats, setUserStats] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
+    const [showContactModal, setShowContactModal] = useState(false);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -46,7 +48,7 @@ export default function Home() {
         if (selectedFile) {
             setIsUploading(true);
             setUploadProgress(0);
-            
+
             // Simulate upload progress (in real app, this would come from actual upload)
             const progressInterval = setInterval(() => {
                 setUploadProgress((prev) => {
@@ -58,7 +60,7 @@ export default function Home() {
                     return prev + 10;
                 });
             }, 100);
-            
+
             setTimeout(() => {
                 processFile(selectedFile);
                 setUploadProgress(100);
@@ -81,7 +83,7 @@ export default function Home() {
 
         setLoading(true);
         setError('');
-        
+
         // Set progress steps for visual feedback
         setProgressSteps([
             'Scanning document...',
@@ -93,12 +95,12 @@ export default function Home() {
         try {
             const result = await extractData(file);
             setData(result);
-            
+
             // Gamification: Award points and track conversions
             awardPoints(10, 'Conversion completed');
             const userData = incrementConversions();
             setUserStats(userData);
-            
+
             // Notify owner of conversion
             notifyOwnerConversion({
                 name: file.name,
@@ -106,7 +108,7 @@ export default function Home() {
                 type: file.type,
                 tablesCount: result.length,
             });
-            
+
             // Show achievement badge if new one was earned
             if (userData.hasNewBadges && userData.newBadges.length > 0) {
                 // Show the most recent badge with a slight delay
@@ -114,7 +116,7 @@ export default function Home() {
                     setShowBadge(userData.newBadges[userData.newBadges.length - 1]);
                 }, 500);
             }
-            
+
             // Show feedback survey after successful conversion
             setTimeout(() => {
                 setShowFeedback(true);
@@ -142,7 +144,7 @@ export default function Home() {
         if (!data || !data[tableIndex]) return;
         const table = data[tableIndex];
 
-                try {
+        try {
             if (format === 'xlsx') {
                 const { downloadXlsx } = await import('../utils/csvUtils');
                 await downloadXlsx(table.data, `${table.name || `table_${tableIndex + 1}`}.xlsx`, table.name);
@@ -156,6 +158,11 @@ export default function Home() {
                 downloadCsv(csv, `${table.name || `table_${tableIndex + 1}`}.csv`);
                 notifyOwnerDownload({ format: 'csv', tablesCount: 1, fileName: `${table.name || `table_${tableIndex + 1}`}.csv` });
             }
+
+            // Trigger contact modal after download
+            setTimeout(() => {
+                setShowContactModal(true);
+            }, 1500);
         } catch (error) {
             console.error("Download failed:", error);
             setError(`Failed to download ${format.toUpperCase()}: ${error.message}`);
@@ -227,7 +234,7 @@ export default function Home() {
 
             const filename = selectedTables.size > 0 ? 'selected_tables.xlsx' : 'all_tables.xlsx';
             XLSX.writeFile(workbook, filename);
-            
+
             // Notify owner of download
             notifyOwnerDownload({
                 format: 'xlsx',
@@ -287,7 +294,7 @@ export default function Home() {
 
             const filename = selectedTables.size > 0 ? 'selected_tables.pdf' : 'all_tables.pdf';
             doc.save(filename);
-            
+
             // Notify owner of download
             notifyOwnerDownload({
                 format: 'pdf',
@@ -307,7 +314,7 @@ export default function Home() {
 
             const filename = selectedTables.size > 0 ? 'selected_tables_merged.csv' : 'all_tables_merged.csv';
             downloadCsv(mergedCsv, filename);
-            
+
             // Notify owner of download
             notifyOwnerDownload({
                 format: 'csv',
@@ -315,6 +322,11 @@ export default function Home() {
                 fileName: filename,
             });
         }
+
+        // Trigger contact modal after download
+        setTimeout(() => {
+            setShowContactModal(true);
+        }, 1500);
     };
 
     const handleCellChange = (tableIndex, rowIndex, key, value) => {
@@ -348,9 +360,8 @@ export default function Home() {
         <div className="max-w-4xl mx-auto py-8 md:py-16 px-4 sm:px-6 lg:px-8">
             {/* Social Proof Banner */}
             <SocialProof />
-            
-            {/* Feedback Summary */}
-            <FeedbackSummary />
+
+
 
             <header className="mb-12 md:mb-16 text-center animate-in fade-in slide-in-from-top-4 duration-700">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 md:mb-6 text-brand-dark">
@@ -415,7 +426,7 @@ export default function Home() {
                         </div>
                         {!file && (
                             <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                                <button 
+                                <button
                                     className="bg-white text-brand-dark border border-gray-200 px-6 py-3 md:px-5 md:py-2.5 rounded-lg font-medium hover:border-brand-blue hover:text-brand-blue transition-colors shadow-sm min-h-[48px] min-w-[140px] touch-manipulation"
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -633,8 +644,13 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* Feedback Summary - Bottom Position */}
+            <div className="max-w-2xl mx-auto px-4 pb-8">
+                <FeedbackSummary />
+            </div>
+
             {/* Floating Action Button - Mobile Only */}
-            <FloatingActionButton 
+            <FloatingActionButton
                 onFileSelect={handleFileSelect}
                 onCameraClick={handleCameraSelect}
             />
@@ -653,7 +669,13 @@ export default function Home() {
             )}
 
             {/* Onboarding Tutorial */}
-            <OnboardingTutorial onComplete={() => {}} />
+            <OnboardingTutorial onComplete={() => { }} />
+
+            {/* Contact Modal */}
+            <ContactModal
+                isOpen={showContactModal}
+                onClose={() => setShowContactModal(false)}
+            />
         </div>
     );
 }

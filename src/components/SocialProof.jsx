@@ -6,6 +6,7 @@ export default function SocialProof() {
     // Hidden - bar is disabled
     return null;
     
+    /* Commented out - component is disabled
     const [stats, setStats] = useState(() => getSocialProofStats());
 
     useEffect(() => {
@@ -41,4 +42,5 @@ export default function SocialProof() {
             </div>
         </div>
     );
+    */
 }

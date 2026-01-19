@@ -13,15 +13,20 @@ export default function ContactModal({ isOpen, onClose }) {
     const [alreadyRated, setAlreadyRated] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
-    // Check if user has already rated on mount
+    // Check if user has already rated EVERY TIME modal opens
     useEffect(() => {
         if (isOpen) {
+            // Always check fresh from localStorage
             const hasRated = hasUserRated();
             setAlreadyRated(hasRated);
+
             if (hasRated) {
                 const existingRating = getUserRating();
                 setRating(existingRating);
                 setIsUpdating(true);
+            } else {
+                setIsUpdating(false);
+                setRating(0);
             }
         }
     }, [isOpen]);
@@ -35,6 +40,9 @@ export default function ContactModal({ isOpen, onClose }) {
 
         // Log for debug
         console.log(`User ${wasUpdate ? 'updated' : 'submitted'} rating: ${star} stars (User ID: ${getUserId()})`);
+
+        // Mark as updating since they've now rated
+        setIsUpdating(true);
     };
 
     const handleSubmit = async (e) => {
@@ -66,8 +74,7 @@ export default function ContactModal({ isOpen, onClose }) {
                 setSuccess(false);
                 setMessage('');
                 setEmail('');
-                setRating(0);
-                setRated(false);
+                // DON'T reset rating or isUpdating - let useEffect handle it on next open
             }, 2000);
         } catch (error) {
             console.error(error);

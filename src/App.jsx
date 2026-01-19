@@ -1,4 +1,3 @@
-```javascript
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -25,7 +24,7 @@ function App() {
           <Route path="faq" element={<FAQ />} />
           <Route path="how-it-works" element={<HowItWorks />} />
           <Route path="use-cases" element={<UseCases />} />
-          <Route path="/emailjs-debug" element={<EmailJSDebug />} />
+          <Route path="emailjs-debug" element={<EmailJSDebug />} />
         </Route>
       </Routes>
     </BrowserRouter>

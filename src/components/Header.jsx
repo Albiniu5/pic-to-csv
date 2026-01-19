@@ -15,18 +15,19 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     <div className="flex items-center">
-                        <Link to="/" className="flex items-center gap-2">
+                        <a href="/" className="flex items-center gap-2">
                             <div className="bg-brand-blue text-white p-1.5 rounded-lg">
                                 <FileSpreadsheet size={24} />
                             </div>
                             <span className="font-bold text-xl text-brand-dark tracking-tight">PicToCSV</span>
-                        </Link>
+                        </a>
                     </div>
 
                     {/* Desktop Menu */}
                     <div className="hidden md:flex items-center space-x-8" style={{ lineHeight: 'normal' }}>
                         <NavLink to="/" isActive={isActive('/')}>Home</NavLink>
                         <NavLink to="/how-it-works" isActive={isActive('/how-it-works')}>How It Works</NavLink>
+                        <NavLink to="/use-cases" isActive={isActive('/use-cases')}>Use Cases</NavLink>
                         <NavLink to="/faq" isActive={isActive('/faq')}>FAQ</NavLink>
                         <a
                             href="https://comparedocsai.com/"
@@ -65,6 +66,7 @@ export default function Header() {
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                         <MobileNavLink to="/" onClick={toggleMenu} isActive={isActive('/')}>Home</MobileNavLink>
                         <MobileNavLink to="/how-it-works" onClick={toggleMenu} isActive={isActive('/how-it-works')}>How It Works</MobileNavLink>
+                        <MobileNavLink to="/use-cases" onClick={toggleMenu} isActive={isActive('/use-cases')}>Use Cases</MobileNavLink>
                         <MobileNavLink to="/faq" onClick={toggleMenu} isActive={isActive('/faq')}>FAQ</MobileNavLink>
                         <a
                             href="https://pictocsv.com/"

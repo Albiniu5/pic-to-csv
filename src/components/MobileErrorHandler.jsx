@@ -61,6 +61,19 @@ const ERROR_MESSAGES = {
         action: 'Check connection',
         suggestions: ['Verify WiFi or mobile data is enabled', 'Try a different network', 'Check if you\'re offline']
     },
+    // No data / Extraction failed
+    'no-data-found': {
+        icon: FileText,
+        title: 'Extraction Failed',
+        message: 'I\'m sorry, this data cannot be extracted. No tables or structured data were found.',
+        action: 'Try another file',
+        suggestions: [
+            'Ensure the image contains a clear table or list',
+            'Check that the text is legible and well-lit',
+            'Verify the file contains CSV-worthy data (structured information)',
+            'Try cropping the image to focus on the table'
+        ]
+    },
     // Default error
     'default': {
         icon: AlertCircle,
@@ -99,6 +112,9 @@ export default function MobileErrorHandler({ error, onRetry, onDismiss }) {
         if (lowerError.includes('api') || lowerError.includes('server') || lowerError.includes('500')) {
             return ERROR_MESSAGES['api-error'];
         }
+        if (lowerError.includes('cannot be extracted') || lowerError.includes('no tables') || lowerError.includes('csv worthy')) {
+            return ERROR_MESSAGES['no-data-found'];
+        }
 
         return ERROR_MESSAGES.default;
     };
@@ -116,7 +132,7 @@ export default function MobileErrorHandler({ error, onRetry, onDismiss }) {
                         <Icon className="w-5 h-5 md:w-6 md:h-6 text-red-600" />
                     </div>
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
                     <h3 className="text-base md:text-lg font-semibold text-red-900 mb-2">
                         {config.title}

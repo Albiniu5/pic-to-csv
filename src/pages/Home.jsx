@@ -49,26 +49,32 @@ export default function Home() {
             setIsUploading(true);
             setUploadProgress(0);
 
-            // Simulate upload progress (in real app, this would come from actual upload)
+            // Simulate upload progress (2 seconds total for better UX)
+            // Real app would use XHR progress
+            const intervalTime = 100;
+            const maxProgress = 90;
+
             const progressInterval = setInterval(() => {
                 setUploadProgress((prev) => {
-                    if (prev >= 90) {
-                        clearInterval(progressInterval);
-                        setIsUploading(false);
-                        return 100;
+                    if (prev >= maxProgress) {
+                        return maxProgress;
                     }
-                    return prev + 5; // Slower progress
+                    return prev + 5;
                 });
-            }, 200); // Slower interval
+            }, intervalTime);
 
+            // Finish after 2 seconds
             setTimeout(() => {
-                processFile(selectedFile);
+                clearInterval(progressInterval);
                 setUploadProgress(100);
+
+                // Small delay at 100% before showing file
                 setTimeout(() => {
+                    processFile(selectedFile);
                     setIsUploading(false);
                     setUploadProgress(0);
                 }, 500);
-            }, 1000);
+            }, 2000);
         }
     };
 

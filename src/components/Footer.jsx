@@ -20,6 +20,7 @@ export default function Footer() {
                         <ul className="space-y-3 text-sm text-brand-muted">
                             <li><Link to="/" className="hover:text-brand-blue transition-colors">Converter</Link></li>
                             <li><Link to="/how-it-works" className="hover:text-brand-blue transition-colors">How It Works</Link></li>
+                            <li><Link to="/use-cases" className="hover:text-brand-blue transition-colors">Use Cases</Link></li>
                             <li><Link to="/faq" className="hover:text-brand-blue transition-colors">FAQ</Link></li>
                         </ul>
                     </div>
@@ -55,9 +56,9 @@ export default function Footer() {
                         </div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-blue-200 hover:shadow-md transition-shadow">
-                        <a 
-                            href="https://comparedocsai.com/" 
-                            target="_blank" 
+                        <a
+                            href="https://comparedocsai.com/"
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-between group"
                         >
@@ -80,7 +81,18 @@ export default function Footer() {
                 </div>
 
                 <div className="border-t border-brand-border mt-8 pt-8 text-center text-sm text-brand-muted">
-                    <p>&copy; {currentYear} PicToCSV. All rights reserved.</p>
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+                        <p>&copy; {currentYear} PicToCSV. All rights reserved.</p>
+                        <button
+                            onClick={() => {
+                                localStorage.removeItem('pictocsv_tutorial_completed');
+                                window.location.reload();
+                            }}
+                            className="text-xs text-brand-muted hover:text-brand-blue underline"
+                        >
+                            Reset Tutorial
+                        </button>
+                    </div>
                 </div>
             </div>
         </footer>

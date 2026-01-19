@@ -383,10 +383,7 @@ export default function Home() {
             </header>
 
             <main className="space-y-6 md:space-y-10">
-                {/* Upload Progress */}
-                {isUploading && file && (
-                    <UploadProgress progress={uploadProgress} fileName={file.name} />
-                )}
+                {/* Upload Progress moved inside dropzone */}
 
                 {/* Enhanced Mobile-Friendly Error Handler */}
                 {error && (
@@ -434,7 +431,7 @@ export default function Home() {
                                 JPG, PNG, PDF supported up to 10MB
                             </p>
                         </div>
-                        {!file && (
+                        {!file && !isUploading && (
                             <div className="flex flex-col sm:flex-row gap-3 mt-2">
                                 <button
                                     className="bg-white text-brand-dark border border-gray-200 px-6 py-3 md:px-5 md:py-2.5 rounded-lg font-medium hover:border-brand-blue hover:text-brand-blue transition-colors shadow-sm min-h-[48px] min-w-[140px] touch-manipulation"
@@ -454,6 +451,12 @@ export default function Home() {
                                 >
                                     <Camera size={18} /> Camera
                                 </button>
+                            </div>
+                        )}
+
+                        {isUploading && (
+                            <div className="w-full max-w-sm mt-4 animate-in zoom-in duration-200">
+                                <UploadProgress progress={uploadProgress} fileName={file ? file.name : "Uploading..."} />
                             </div>
                         )}
                     </div>

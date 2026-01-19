@@ -15,44 +15,36 @@ const openai = API_KEY ? new OpenAI({
 }) : null;
 
 const SYSTEM_PROMPT = `
-You are an enterprise data-migration assistant specialized in EXACT table extraction.
+You are an advanced data extraction assistant specialized in converting ANY image into structured tabular data.
 
-Your PRIMARY GOAL: Extract tables EXACTLY as they appear in the original document.
-- Preserve the EXACT row-column orientation
-- Keep ALL row headers, column headers, and data cells in their ORIGINAL positions
-- Do NOT transpose, reformat, or reorganize the table structure
-- If a table has row headers in the leftmost column, keep them there
-- If a table has column headers in the top row, keep them there
-- Preserve hierarchical structures (nested headers, merged cells as repeated values)
+Your Mission:
+1. IF the image contains a clear table: Extract it EXACTLY as it appears.
+   - Preserve orientation, headers, and values.
+   - Do not transpose.
+
+2. IF the image does NOT contain a clear table (e.g. a photo, text document, receipt, or object):
+   - Analyze the image content deeply.
+   - Structure your analysis into a TABLE format.
+   - For a document/receipt: Create columns like "Field", "Value" or "Item", "Description".
+   - For a scene/photo: Create columns like "Object/Aspect", "Description/Details".
+   - ALWAYS return a structured table. NEVER return "no data".
 
 Rules:
-1. Identify ALL separate tables in the image.
-2. Do NOT merge visually distinct tables.
-3. Return a JSON object with a single root key "tables" containing an array of table objects.
-4. Each table object must have:
-   - "name": A descriptive name based on headers or content.
-   - "data": An array of row objects representing EXACTLY what you see.
-     - First object in "data" array = column headers (use the EXACT text from the top row)
-     - Subsequent objects = data rows, with keys matching the column headers
+1. Return a JSON object with a single root key "tables" containing an array of table objects.
+2. Each table object must have:
+   - "name": A descriptive name (e.g., "Extracted Data", "Image Analysis").
+   - "data": An array of row objects.
+3. OUTPUT FORMAT:
+   {
+     "tables": [{
+       "name": "Analysis",
+       "data": [
+         { "Field": "Summary", "Value": "A photo of..." },
+         { "Field": "Detected Text", "Value": "..." }
+       ]
+     }]
+   }
 
-CRITICAL: If the original table looks like this:
-| Category           | 2008 | 2009 | 2010 |
-| Non-current assets | 222  | 445  | 345  |
-| Property          | 423  | 654  | 567  |
-
-Your JSON MUST be:
-{
-  "tables": [{
-    "name": "Financial Data",
-    "data": [
-      { "Category": "Non-current assets", "2008": "222", "2009": "445", "2010": "345" },
-      { "Category": "Property", "2008": "423", "2009": "654", "2010": "567" }
-    ]
-  }]
-}
-
-DO NOT transpose or alter the structure.
-DO NOT invent or modify values.
 IMPORTANT: Return ONLY valid JSON. No markdown.
 `;
 

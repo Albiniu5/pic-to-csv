@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Send, X, AlertCircle } from 'lucide-react';
 import { getUserId, hasUserRated, getUserRating, updateUserRating } from '../utils/userIdentity';
+import emailjs from '@emailjs/browser';
 
 export default function ContactModal({ isOpen, onClose }) {
     const [email, setEmail] = useState('');
@@ -12,6 +13,14 @@ export default function ContactModal({ isOpen, onClose }) {
     const [rated, setRated] = useState(false);
     const [alreadyRated, setAlreadyRated] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+
+    // Initialize EmailJS
+    useEffect(() => {
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+        if (publicKey) {
+            emailjs.init(publicKey);
+        }
+    }, []);
 
     // Check if user has already rated EVERY TIME modal opens
     useEffect(() => {
@@ -64,6 +73,26 @@ export default function ContactModal({ isOpen, onClose }) {
             // Save full feedback if message provided
             if (message.trim() || email.trim()) {
                 updateUserRating(rating, message, email);
+            }
+
+            // Send email via EmailJS if configured
+            const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+            const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+            if (serviceId && templateId) {
+                try {
+                    await emailjs.send(serviceId, templateId, {
+                        user_name: email ? email.split('@')[0] : 'Anonymous',
+                        user_email: email || 'Not provided',
+                        rating: rating || 'Not rated',
+                        message: message || 'No message provided',
+                        user_id: getUserId(),
+                        timestamp: new Date().toLocaleString()
+                    });
+                    console.log('✅ Email sent successfully via EmailJS');
+                } catch (emailError) {
+                    console.warn('⚠️ EmailJS error:', emailError);
+                }
             }
 
             await new Promise(resolve => setTimeout(resolve, 800));

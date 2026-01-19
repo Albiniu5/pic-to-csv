@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { Star } from 'lucide-react';
 
 export default function ContactModal({ isOpen, onClose }) {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [rating, setRating] = useState(0);
+    const [hoverRating, setHoverRating] = useState(0);
     const [sending, setSending] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -21,9 +24,21 @@ export default function ContactModal({ isOpen, onClose }) {
             // For now, log to console (similar to CompareDocsAI initial implementation)
             console.log('--- NEW CONTACT MESSAGE ---');
             console.log('From:', email || 'Anonymous');
+            console.log('Rating:', rating);
             console.log('Message:', message);
             console.log('Destination: gafdj1523@gmail.com (server-side)');
             console.log('---------------------------');
+
+            // Save rating to localStorage if provided
+            if (rating > 0) {
+                const feedbacks = JSON.parse(localStorage.getItem('feedbackRatings') || '[]');
+                feedbacks.push({
+                    rating,
+                    timestamp: new Date().toISOString(),
+                    msg: message
+                });
+                localStorage.setItem('feedbackRatings', JSON.stringify(feedbacks));
+            }
 
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -68,6 +83,30 @@ export default function ContactModal({ isOpen, onClose }) {
                         </p>
 
                         <form onSubmit={handleSubmit}>
+                            {/* Star Rating Section */}
+                            <div className="mb-6 text-center">
+                                <p className="text-sm text-brand-muted mb-2">How was your experience?</p>
+                                <div className="flex justify-center gap-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setRating(star)}
+                                            onMouseEnter={() => setHoverRating(star)}
+                                            onMouseLeave={() => setHoverRating(0)}
+                                            className="p-1 transition-transform hover:scale-110 focus:outline-none"
+                                        >
+                                            <Star
+                                                size={32}
+                                                className={`transition-colors ${star <= (hoverRating || rating)
+                                                        ? 'fill-amber-400 text-amber-400'
+                                                        : 'text-gray-300'
+                                                    }`}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                             <input
                                 type="email"
                                 value={email}

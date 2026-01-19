@@ -93,12 +93,15 @@ export default function Home() {
         setLoading(true);
         setError('');
 
-        // Set progress steps for visual feedback
+        // Set progress steps for visual feedback - more granular to prevent "stuck" feeling
         setProgressSteps([
-            'Scanning document...',
-            'Detecting tables...',
-            'Extracting data...',
-            'Finalizing results...'
+            'Uploading your file...',
+            'Scanning document structure...',
+            'AI analyzing content...',
+            'Detecting tables and data...',
+            'Extracting information...',
+            'Processing results...',
+            'Almost done! Finalizing...'
         ]);
 
         try {

@@ -33,6 +33,39 @@ export default function Home() {
     const [isUploading, setIsUploading] = useState(false);
     const [showContactModal, setShowContactModal] = useState(false);
 
+    const startUploadProcess = (selectedFile) => {
+        if (!selectedFile) return;
+
+        setIsUploading(true);
+        setUploadProgress(0);
+
+        // Simulate upload progress (2 seconds total for better UX)
+        const intervalTime = 100;
+        const maxProgress = 90;
+
+        const progressInterval = setInterval(() => {
+            setUploadProgress((prev) => {
+                if (prev >= maxProgress) {
+                    return maxProgress;
+                }
+                return prev + 5;
+            });
+        }, intervalTime);
+
+        // Finish after 2 seconds
+        setTimeout(() => {
+            clearInterval(progressInterval);
+            setUploadProgress(100);
+
+            // Small delay at 100% before showing file
+            setTimeout(() => {
+                processFile(selectedFile);
+                setIsUploading(false);
+                setUploadProgress(0);
+            }, 500);
+        }, 2000);
+    };
+
     const handleDragOver = (e) => {
         e.preventDefault();
     };
@@ -40,42 +73,12 @@ export default function Home() {
     const handleDrop = (e) => {
         e.preventDefault();
         const droppedFile = e.dataTransfer.files[0];
-        if (droppedFile) processFile(droppedFile);
+        if (droppedFile) startUploadProcess(droppedFile);
     };
 
     const handleFileSelect = (e) => {
         const selectedFile = e.target.files[0];
-        if (selectedFile) {
-            setIsUploading(true);
-            setUploadProgress(0);
-
-            // Simulate upload progress (2 seconds total for better UX)
-            // Real app would use XHR progress
-            const intervalTime = 100;
-            const maxProgress = 90;
-
-            const progressInterval = setInterval(() => {
-                setUploadProgress((prev) => {
-                    if (prev >= maxProgress) {
-                        return maxProgress;
-                    }
-                    return prev + 5;
-                });
-            }, intervalTime);
-
-            // Finish after 2 seconds
-            setTimeout(() => {
-                clearInterval(progressInterval);
-                setUploadProgress(100);
-
-                // Small delay at 100% before showing file
-                setTimeout(() => {
-                    processFile(selectedFile);
-                    setIsUploading(false);
-                    setUploadProgress(0);
-                }, 500);
-            }, 2000);
-        }
+        if (selectedFile) startUploadProcess(selectedFile);
     };
 
     const processFile = (file) => {
@@ -149,7 +152,7 @@ export default function Home() {
 
     const handleCameraSelect = (e) => {
         const selectedFile = e.target.files[0];
-        if (selectedFile) processFile(selectedFile);
+        if (selectedFile) startUploadProcess(selectedFile);
     };
 
     // Handle download for a specific table

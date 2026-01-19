@@ -22,8 +22,8 @@ export default function FeedbackSummary() {
         };
 
         loadSummary();
-        // Reload every 30 seconds to catch new feedback
-        const interval = setInterval(loadSummary, 30000);
+        // Reload every 2 seconds to show rating changes immediately
+        const interval = setInterval(loadSummary, 2000);
         return () => clearInterval(interval);
     }, []);
 

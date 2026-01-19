@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Star, Send, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Star, Send, X, AlertCircle } from 'lucide-react';
+import { getUserId, hasUserRated, getUserRating, updateUserRating } from '../utils/userIdentity';
 
 export default function ContactModal({ isOpen, onClose }) {
     const [email, setEmail] = useState('');
@@ -9,22 +10,31 @@ export default function ContactModal({ isOpen, onClose }) {
     const [sending, setSending] = useState(false);
     const [success, setSuccess] = useState(false);
     const [rated, setRated] = useState(false);
+    const [alreadyRated, setAlreadyRated] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    // Check if user has already rated on mount
+    useEffect(() => {
+        if (isOpen) {
+            const hasRated = hasUserRated();
+            setAlreadyRated(hasRated);
+            if (hasRated) {
+                const existingRating = getUserRating();
+                setRating(existingRating);
+                setIsUpdating(true);
+            }
+        }
+    }, [isOpen]);
 
     const handleRating = (star) => {
         setRating(star);
         setRated(true);
 
-        // Instant save to localStorage
-        const feedbacks = JSON.parse(localStorage.getItem('feedbackRatings') || '[]');
-        feedbacks.push({
-            rating: star,
-            timestamp: new Date().toISOString(),
-            msg: "Star rating only"
-        });
-        localStorage.setItem('feedbackRatings', JSON.stringify(feedbacks));
+        // Use the update function which handles both new and existing ratings
+        const wasUpdate = updateUserRating(star);
 
         // Log for debug
-        console.log(`User rated: ${star} stars (Auto-saved)`);
+        console.log(`User ${wasUpdate ? 'updated' : 'submitted'} rating: ${star} stars (User ID: ${getUserId()})`);
     };
 
     const handleSubmit = async (e) => {
@@ -41,19 +51,11 @@ export default function ContactModal({ isOpen, onClose }) {
             console.log('Email:', email || 'Not provided');
             console.log('Message:', message);
             console.log('Rating:', rating);
+            console.log('User ID:', getUserId());
 
             // Save full feedback if message provided
-            if (message.trim()) {
-                const feedbacks = JSON.parse(localStorage.getItem('feedbackRatings') || '[]');
-                // If we already saved the rating, update the last entry or just add new one
-                // Simple approach: Add new entry with message
-                feedbacks.push({
-                    rating,
-                    timestamp: new Date().toISOString(),
-                    msg: message,
-                    email: email || 'Anonymous'
-                });
-                localStorage.setItem('feedbackRatings', JSON.stringify(feedbacks));
+            if (message.trim() || email.trim()) {
+                updateUserRating(rating, message, email);
             }
 
             await new Promise(resolve => setTimeout(resolve, 800));
@@ -89,6 +91,17 @@ export default function ContactModal({ isOpen, onClose }) {
                             </button>
                         </div>
 
+                        {/* Info banner for users who already rated */}
+                        {isUpdating && (
+                            <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+                                <AlertCircle size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
+                                <div className="text-sm text-blue-800">
+                                    <p className="font-medium">You've already rated this app!</p>
+                                    <p className="text-xs mt-1">You can update your rating or add a message below.</p>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Frictionless Rating */}
                         <div className="mb-8 text-center bg-gray-50 rounded-xl p-4 border border-gray-100">
                             <p className="text-sm font-medium text-gray-600 mb-3">Rate your experience</p>
@@ -104,8 +117,8 @@ export default function ContactModal({ isOpen, onClose }) {
                                         <Star
                                             size={32}
                                             className={`transition-colors ${star <= (hoverRating || rating)
-                                                    ? 'fill-amber-400 text-amber-400'
-                                                    : 'text-gray-300'
+                                                ? 'fill-amber-400 text-amber-400'
+                                                : 'text-gray-300'
                                                 }`}
                                         />
                                     </button>

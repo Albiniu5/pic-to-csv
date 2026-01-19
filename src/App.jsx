@@ -7,7 +7,6 @@ import TermsOfService from './pages/TermsOfService';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import HowItWorks from './pages/HowItWorks';
-import HowItWorks from './pages/HowItWorks';
 import UseCases from './pages/UseCases';
 import Analytics from './components/Analytics';
 
@@ -21,7 +20,6 @@ function App() {
           <Route path="privacy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<TermsOfService />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="faq" element={<FAQ />} />
           <Route path="faq" element={<FAQ />} />
           <Route path="how-it-works" element={<HowItWorks />} />
           <Route path="use-cases" element={<UseCases />} />

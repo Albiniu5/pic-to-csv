@@ -35,18 +35,16 @@ export default function ProgressIndicator({ steps = [] }) {
                 {steps.map((step, index) => (
                     <div key={index} className="flex items-center gap-3">
                         <div
-                            className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${
-                                index <= currentStep
+                            className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${index <= currentStep
                                     ? 'bg-brand-blue text-white scale-110'
                                     : 'bg-gray-200 text-gray-400'
-                            }`}
+                                }`}
                         >
                             {index < currentStep ? '✓' : index === currentStep ? <Loader2 className="w-4 h-4 animate-spin" /> : index + 1}
                         </div>
                         <div className="flex-1">
-                            <div className={`font-medium transition-colors duration-500 ${
-                                index <= currentStep ? 'text-brand-dark' : 'text-gray-400'
-                            }`}>
+                            <div className={`font-medium transition-colors duration-500 ${index <= currentStep ? 'text-brand-dark' : 'text-gray-400'
+                                }`}>
                                 {step}
                             </div>
                             {index === currentStep && (

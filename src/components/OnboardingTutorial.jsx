@@ -97,11 +97,7 @@ export default function OnboardingTutorial({ onComplete }) {
 
             {/* Tutorial Card */}
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-                <div className={`bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in duration-300 pointer-events-auto relative ${
-                    step.position === 'center' ? '' : 
-                    step.position === 'top' ? 'self-start mt-8' : 
-                    'self-end mb-8'
-                }`}>
+                <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in duration-300 pointer-events-auto relative">
                     {/* Progress Bar */}
                     <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100 rounded-t-xl">
                         <div
@@ -141,11 +137,10 @@ export default function OnboardingTutorial({ onComplete }) {
                         <button
                             onClick={handlePrevious}
                             disabled={isFirst}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] touch-manipulation ${
-                                isFirst
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] touch-manipulation ${isFirst
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                     : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-700'
-                            }`}
+                                }`}
                         >
                             <ArrowLeft size={18} />
                             <span className="hidden sm:inline">Previous</span>
@@ -155,10 +150,9 @@ export default function OnboardingTutorial({ onComplete }) {
                             {TUTORIAL_STEPS.map((_, idx) => (
                                 <div
                                     key={idx}
-                                    className={`w-2 h-2 rounded-full transition-colors ${
-                                        idx === currentStep ? 'bg-brand-blue' : 
-                                        idx < currentStep ? 'bg-green-500' : 'bg-gray-300'
-                                    }`}
+                                    className={`w-2 h-2 rounded-full transition-colors ${idx === currentStep ? 'bg-brand-blue' :
+                                            idx < currentStep ? 'bg-green-500' : 'bg-gray-300'
+                                        }`}
                                 />
                             ))}
                         </div>

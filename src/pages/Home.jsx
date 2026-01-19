@@ -57,9 +57,9 @@ export default function Home() {
                         setIsUploading(false);
                         return 100;
                     }
-                    return prev + 10;
+                    return prev + 5; // Slower progress
                 });
-            }, 100);
+            }, 200); // Slower interval
 
             setTimeout(() => {
                 processFile(selectedFile);
@@ -94,6 +94,13 @@ export default function Home() {
 
         try {
             const result = await extractData(file);
+
+            // ERROR CHECK: If result is empty or invalid
+            if (!result || result.length === 0) {
+                // If it was a successful API call but no tables found:
+                throw new Error("I'm sorry, this data cannot be extracted. No tables or structured data were found in the image.");
+            }
+
             setData(result);
 
             // Gamification: Award points and track conversions
@@ -160,9 +167,8 @@ export default function Home() {
             }
 
             // Trigger contact modal after download
-            setTimeout(() => {
-                setShowContactModal(true);
-            }, 1500);
+            // Trigger contact modal immediately after download
+            setShowContactModal(true);
         } catch (error) {
             console.error("Download failed:", error);
             setError(`Failed to download ${format.toUpperCase()}: ${error.message}`);
@@ -323,10 +329,8 @@ export default function Home() {
             });
         }
 
-        // Trigger contact modal after download
-        setTimeout(() => {
-            setShowContactModal(true);
-        }, 1500);
+        // Trigger contact modal immediately after download
+        setShowContactModal(true);
     };
 
     const handleCellChange = (tableIndex, rowIndex, key, value) => {

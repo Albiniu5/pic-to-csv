@@ -18,7 +18,7 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold text-brand-dark mb-4">Product</h3>
                         <ul className="space-y-3 text-sm text-brand-muted">
-                            <li><Link to="/" className="hover:text-brand-blue transition-colors">Converter</Link></li>
+
                             <li><Link to="/how-it-works" className="hover:text-brand-blue transition-colors">How It Works</Link></li>
                             <li><Link to="/use-cases" className="hover:text-brand-blue transition-colors">Use Cases</Link></li>
                             <li><Link to="/faq" className="hover:text-brand-blue transition-colors">FAQ</Link></li>

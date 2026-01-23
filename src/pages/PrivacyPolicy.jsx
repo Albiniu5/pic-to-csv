@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function PrivacyPolicy() {
     return (
@@ -39,7 +40,7 @@ export default function PrivacyPolicy() {
                 <section className="mb-8">
                     <h2 className="text-xl font-semibold text-slate-900 mb-4">5. Contact Us</h2>
                     <p className="text-slate-600">
-                        If you have questions about this privacy policy, please contact us at support@pictocsv.com.
+                        If you have questions about this privacy policy, please <Link to="/contact" className="text-brand-blue hover:underline">contact us here</Link>.
                     </p>
                 </section>
             </div>

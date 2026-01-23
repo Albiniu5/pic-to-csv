@@ -5,60 +5,60 @@ const cases = [
     {
         icon: ChefHat,
         title: "Digitize Handwritten Recipes",
-        description: "Snap a photo of grandma's old recipe cards. PicToCSV extracts the ingredients and instructions into a clean table.",
+        description: "Grandma's cursive is hard to read? Snap a pic of that stained recipe card. We'll grab the ingredients and steps so you can actually read them on your phone.",
         example: {
-            input: "Photo of stained recipe card",
-            output: "Columns: Ingredient, Quantity, Unit, Step"
+            input: "Photo of old recipe card",
+            output: "Columns: Ingredient, Quantity, Steps"
         },
         color: "bg-orange-100 text-orange-600"
     },
     {
         icon: MapPin,
-        title: "Travel Itinerary from Landmarks",
-        description: "Upload photos of landmarks or tourist maps. Get a structured list of locations, opening hours, and descriptions.",
+        title: "Travel Plans from Maps",
+        description: "Don't type out every stop from a brochure. Just take a photo of the map or guide. We'll list out the hours, locations, and details so you can just go.",
         example: {
-            input: "Photo of a tourist brochure map",
-            output: "Columns: Location, Type, Opening Hours, Fee"
+            input: "Photo of tourist guide",
+            output: "Columns: Place, Hours, Entry Fee"
         },
         color: "bg-blue-100 text-blue-600"
     },
     {
         icon: Receipt,
-        title: "Expense Tracking from Receipts",
-        description: "Don't type out receipts manually. Upload a batch of crumpled reciepts and get a unified expense list.",
+        title: "Expense Tracking (No Typing)",
+        description: "Stop manually typing receipts. Seriously. Upload a batch of them, and we'll pull out the dates, merchants, and totals for your expense report.",
         example: {
-            input: "Photo of multiple receipts on a table",
-            output: "Columns: Date, Merchant, Item, Price, Category"
+            input: "Photo of crumpled receipts",
+            output: "Columns: Date, Store, Total, Category"
         },
         color: "bg-green-100 text-green-600"
     },
     {
         icon: GraduationCap,
         title: "Study Notes to Flashcards",
-        description: "Convert your handwritten lecture notes or textbook diagrams into structured Q&A pairs for Anki or Quizlet.",
+        description: "Turn your scribbled lecture notes into a clean study list. Great for making Anki cards or Quizlets without retyping everything.",
         example: {
-            input: "Photo of biology notes",
-            output: "Columns: Concept, Definition, Key Details"
+            input: "Photo of notebook page",
+            output: "Columns: Term, Definition, Notes"
         },
         color: "bg-purple-100 text-purple-600"
     },
     {
         icon: Calculator,
-        title: "Inventory Management",
-        description: "Take a picture of your pantry or warehouse shelf. AI counts the items and lists them for you.",
+        title: "Inventory Counting",
+        description: "Need to count stock? Snap a shelf photo. Our AI lists what's there so you don't have to stand there with a clipboard all day.",
         example: {
-            input: "Photo of a stocked shelf",
-            output: "Columns: Item Name, Estimated Count, Brand"
+            input: "Photo of warehouse shelf",
+            output: "Columns: Item Name, Count, SKU"
         },
         color: "bg-red-100 text-red-600"
     },
     {
         icon: Layout,
-        title: "Web Scraping from Screenshots",
-        description: "Screenshot a product list or pricing table from a website that blocks copying. Get the clean data instantly.",
+        title: "Website Data Scraping",
+        description: "Website won't let you copy-paste a table? Screenshot it. We'll turn that image back into a spreadsheet you can actually use.",
         example: {
-            input: "Screenshot of competitor pricing",
-            output: "Columns: Product, Price, Features"
+            input: "Screenshot of pricing page",
+            output: "Columns: Plan, Price, Features"
         },
         color: "bg-indigo-100 text-indigo-600"
     }

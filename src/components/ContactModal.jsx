@@ -19,6 +19,8 @@ export default function ContactModal({ isOpen, onClose }) {
         const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
         if (publicKey) {
             emailjs.init(publicKey);
+        } else {
+            console.error('❌ EmailJS PUBLIC KEY missing! Emailjs will not work.');
         }
     }, []);
 
@@ -79,13 +81,32 @@ export default function ContactModal({ isOpen, onClose }) {
             const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
             const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 
+            if (!serviceId || !templateId) {
+                console.error('❌ EmailJS Service or Template ID missing! Email will not be sent.');
+                console.log('Service:', serviceId, 'Template:', templateId);
+            }
+
             if (serviceId && templateId) {
                 try {
+                    const userName = email ? email.split('@')[0] : 'User';
+                    const userEmail = email || 'not-provided@pictocsv.com';
+
+                    // Send comprehensive variables to handle any template configuration
                     await emailjs.send(serviceId, templateId, {
-                        user_name: email ? email.split('@')[0] : 'Anonymous',
+                        // Standard fields
+                        from_name: userName,
+                        from_email: userEmail,
+                        reply_to: email || '',
+                        to_name: 'Admin',
+
+                        // Specific fields
+                        user_name: userName,
                         user_email: email || 'Not provided',
-                        rating: rating || 'Not rated',
+                        rating: rating,
                         message: message || 'No message provided',
+                        subject: `New ${rating}-Star Rating`,
+
+                        // Context
                         user_id: getUserId(),
                         timestamp: new Date().toLocaleString()
                     });

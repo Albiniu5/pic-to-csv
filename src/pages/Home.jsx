@@ -8,7 +8,6 @@ import InAppTips from '../components/InAppTips';
 import SocialProof from '../components/SocialProof';
 import ProgressIndicator from '../components/ProgressIndicator';
 import ProgressAnimation from '../components/ProgressAnimation';
-import PostConversionFeedback from '../components/PostConversionFeedback';
 import AchievementBadge from '../components/AchievementBadge';
 import MobileErrorHandler from '../components/MobileErrorHandler';
 import OnboardingTutorial from '../components/OnboardingTutorial';
@@ -24,7 +23,6 @@ export default function Home() {
     const [data, setData] = useState(null);
     const [selectedTables, setSelectedTables] = useState(new Set());
     const [error, setError] = useState('');
-    const [showFeedback, setShowFeedback] = useState(false);
     const [showTip, setShowTip] = useState(true);
     const [showBadge, setShowBadge] = useState(null);
     const [progressSteps, setProgressSteps] = useState([]);
@@ -135,11 +133,6 @@ export default function Home() {
                     setShowBadge(userData.newBadges[userData.newBadges.length - 1]);
                 }, 500);
             }
-
-            // Show feedback survey after successful conversion
-            setTimeout(() => {
-                setShowFeedback(true);
-            }, 1500);
         } catch (err) {
             setError(err.message || 'Failed to convert file. Please try again.');
         } finally {
@@ -633,9 +626,30 @@ export default function Home() {
 
                     <div className="space-y-12">
                         <div>
-                            <h3 className="text-lg font-bold text-brand-dark mb-3">How does the image to Excel conversion work?</h3>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">How do I turn a picture into a CSV file?</h3>
                             <p className="text-brand-muted leading-relaxed">
-                                Unlike simple OCR tools that just read text, our AI analyzes the visual structure of your document to identify rows, columns, and headers, reconstructing them perfectly into an editable Excel file.
+                                Honestly, it's super easy. You don't need to manually type anything. Just grab your screenshot or photo, drop it into the upload box up top, and our AI does the heavy lifting. It reads the text, figures out the columns, and hands you back a clean CSV. Done and done.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">How to extract data from an image?</h3>
+                            <p className="text-brand-muted leading-relaxed">
+                                The old way was typing it out by hand, which let's be real, nobody has time for. We use AI vision to look at your image just like a human would. It picks out the data—whether it's an invoice, a price list, or some random stats—and converts it into actual text you can edit.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">Can you convert PNG to CSV?</h3>
+                            <p className="text-brand-muted leading-relaxed">
+                                Yup, absolutely. PNGs, JPGs, even PDFs—we handle 'em all. So if you've got a crisp screenshot or a grainy photo from your phone, throw it in. We'll crunch the data and spit out a CSV or Excel file for you in seconds.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-dark mb-3">How to create a CSV file with images?</h3>
+                            <p className="text-brand-muted leading-relaxed">
+                                If you're sitting on a pile of images with data locked inside, this is the cheat code. Instead of manual entry, you just upload the pic here. We "unlock" that data and organize it into rows and columns so you can open it right up in Excel or Google Sheets.
                             </p>
                         </div>
 
@@ -643,13 +657,6 @@ export default function Home() {
                             <h3 className="text-lg font-bold text-brand-dark mb-3">Is my data safe?</h3>
                             <p className="text-brand-muted leading-relaxed">
                                 Yes, absolutely. We prioritize your privacy. Files uploaded to PicToCSV are processed in temporary memory and are permanently deleted immediately after the analysis is complete. We do not store, share, or use your documents to train our models.
-                            </p>
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg font-bold text-brand-dark mb-3">What file formats do you support?</h3>
-                            <p className="text-brand-muted leading-relaxed">
-                                We currently support PDF documents, standard image formats (JPG, PNG), and text files. You can also paste text directly.
                             </p>
                         </div>
 
@@ -673,11 +680,6 @@ export default function Home() {
                 onFileSelect={handleFileSelect}
                 onCameraClick={handleCameraSelect}
             />
-
-            {/* Post-Conversion Feedback */}
-            {showFeedback && (
-                <PostConversionFeedback onClose={() => setShowFeedback(false)} />
-            )}
 
             {/* Achievement Badge Display */}
             {showBadge && (

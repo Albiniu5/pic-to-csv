@@ -1,78 +1,85 @@
 import React from 'react';
-import { ChefHat, Calculator, Camera, MapPin, Receipt, GraduationCap, Layout } from 'lucide-react';
+import { ChefHat, Calculator, Camera, MapPin, Receipt, GraduationCap, Layout, FileSpreadsheet, Building2, Search } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const cases = [
     {
-        icon: ChefHat,
-        title: "Digitize Handwritten Recipes",
-        description: "Grandma's cursive is hard to read? Snap a pic of that stained recipe card. We'll grab the ingredients and steps so you can actually read them on your phone.",
-        example: {
-            input: "Photo of old recipe card",
-            output: "Columns: Ingredient, Quantity, Steps"
-        },
-        color: "bg-orange-100 text-orange-600"
-    },
-    {
-        icon: MapPin,
-        title: "Travel Plans from Maps",
-        description: "Don't type out every stop from a brochure. Just take a photo of the map or guide. We'll list out the hours, locations, and details so you can just go.",
-        example: {
-            input: "Photo of tourist guide",
-            output: "Columns: Place, Hours, Entry Fee"
-        },
-        color: "bg-blue-100 text-blue-600"
-    },
-    {
         icon: Receipt,
-        title: "Expense Tracking (No Typing)",
-        description: "Stop manually typing receipts. Seriously. Upload a batch of them, and we'll pull out the dates, merchants, and totals for your expense report.",
+        title: "Convert Receipts to CSV",
+        description: "Stop manually typing receipts for expense reports. Snap a photo of your receipt, and we'll extract the date, store name, total, and line items into a neat CSV file ready for Excel or your accounting software.",
         example: {
-            input: "Photo of crumpled receipts",
-            output: "Columns: Date, Store, Total, Category"
+            input: "Photo of crumpled gas receipt",
+            output: "Date, Vendor, Amount, Tax"
         },
         color: "bg-green-100 text-green-600"
     },
     {
-        icon: GraduationCap,
-        title: "Study Notes to Flashcards",
-        description: "Turn your scribbled lecture notes into a clean study list. Great for making Anki cards or Quizlets without retyping everything.",
+        icon: FileSpreadsheet,
+        title: "Invoice Data Extraction",
+        description: "Automate your accounts payable. Upload PDF or image invoices to extract invoice numbers, dates, and line item details instantly. Perfect for small business owners and freelancers.",
         example: {
-            input: "Photo of notebook page",
-            output: "Columns: Term, Definition, Notes"
+            input: "PDF Invoice from supplier",
+            output: "Inv#, Date, Line Items, Total"
+        },
+        color: "bg-blue-100 text-blue-600"
+    },
+    {
+        icon: Layout,
+        title: "Table Images to Excel",
+        description: "Found a data table in a PDF report or a textbook? Don't retype it. Take a screenshot and convert the table image directly to an Excel (XLSX) spreadsheet in seconds.",
+        example: {
+            input: "Screenshot of financial report",
+            output: "Fully formatted Excel Sheet"
+        },
+        color: "bg-indigo-100 text-indigo-600"
+    },
+    {
+        icon: Search,
+        title: "Research & Data Entry",
+        description: "Collecting data from physical archives, books, or old documents? Digitize your research material fast. Turn pages of data into searchable, sortable spreadsheets for analysis.",
+        example: {
+            input: "Photo of demographic stats page",
+            output: "Structured Data Table"
         },
         color: "bg-purple-100 text-purple-600"
     },
     {
-        icon: Calculator,
-        title: "Inventory Counting",
-        description: "Need to count stock? Snap a shelf photo. Our AI lists what's there so you don't have to stand there with a clipboard all day.",
+        icon: Building2,
+        title: "Accounting Automation",
+        description: "Simplify tax season. Batch convert bank statements, credit card statements, or financial records from PDF/Image to CSV to import them into QuickBooks, Xero, or clean them up in Excel.",
         example: {
-            input: "Photo of warehouse shelf",
-            output: "Columns: Item Name, Count, SKU"
+            input: "Scanned bank statement",
+            output: "Date, Description, Debit, Credit"
         },
-        color: "bg-red-100 text-red-600"
+        color: "bg-orange-100 text-orange-600"
     },
     {
-        icon: Layout,
-        title: "Website Data Scraping",
-        description: "Website won't let you copy-paste a table? Screenshot it. We'll turn that image back into a spreadsheet you can actually use.",
+        icon: Calculator,
+        title: "Inventory Management",
+        description: "doing a stock take? Just take photos of your inventory lists or shelf tags. We can digitize the handwritten or printed counts into a digital file for your inventory system.",
         example: {
-            input: "Screenshot of pricing page",
-            output: "Columns: Plan, Price, Features"
+            input: "Photo of inventory sheet",
+            output: "Item SKU, Quantities, Location"
         },
-        color: "bg-indigo-100 text-indigo-600"
+        color: "bg-red-100 text-red-600"
     }
 ];
 
 export default function UseCases() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <SEO
+                title="Image to CSV Use Cases – Receipts, Invoices, & Data Entry | PicToCSV"
+                description="Discover how to use PicToCSV for extracting data from receipts, invoices, research documents, and bank statements. automate your data entry tasks."
+                canonical="/use-cases"
+            />
+
             <div className="text-center mb-16 animate-in slide-in-from-top-4 duration-700">
                 <h1 className="text-4xl md:text-5xl font-bold text-brand-dark mb-6">
-                    Creative <span className="text-brand-blue">Use Cases</span>
+                    Image to CSV <span className="text-brand-blue">Use Cases</span>
                 </h1>
                 <p className="text-xl text-brand-muted max-w-2xl mx-auto">
-                    PicToCSV isn't just for spreadsheets. Discover how AI visual analysis can transform your daily tasks.
+                    PicToCSV isn't just for spreadsheets. Discover how AI visual analysis can transform your daily administrative tasks.
                 </p>
             </div>
 

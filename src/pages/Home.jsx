@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Upload, FileText, Download, Loader2, Bot, Zap, Lock, Smartphone, Camera } from 'lucide-react';
+import SEO from '../components/SEO';
 import { convertJsonToCsv, downloadCsv } from '../utils/csvUtils';
 import { extractData } from '../services/aiService';
 import TableEditor from '../components/TableEditor';
@@ -371,12 +372,20 @@ export default function Home() {
             <SocialProof />
 
 
+            <SEO
+                title="Image to CSV Converter – Extract Tables from Images | PicToCSV"
+                description="Convert images to CSV and Excel files instantly. Upload a photo of a table, receipt, or document and extract structured data using AI in seconds."
+                canonical="/"
+            />
 
             <header className="mb-12 md:mb-16 text-center animate-in fade-in slide-in-from-top-4 duration-700">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 md:mb-6 text-brand-dark">
-                    Unstructured Data to <span className="text-brand-blue">Excel</span>
+                    Convert Images to <span className="text-brand-blue">CSV</span> Instantly with AI
                 </h1>
-                <p className="text-brand-muted text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                <p className="text-brand-muted text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed mb-6">
+                    PicToCSV lets you convert images to CSV and Excel files instantly. Upload a photo of a table, receipt, or document and extract structured data using AI in seconds.
+                </p>
+                <p className="text-brand-muted text-base sm:text-lg max-w-2xl mx-auto leading-relaxed hidden">
                     Turn your screenshots, messy PDFs, and images into clean, formatted Excel sheets in seconds using AI.
                 </p>
             </header>
@@ -612,6 +621,32 @@ export default function Home() {
                         <h3 className="text-xl font-bold text-brand-dark mb-3">Works Everywhere</h3>
                         <p className="text-brand-muted leading-relaxed">
                             Fully responsive and cloud-based. Extract data on any device - desktop, tablet, or mobile. No installation needed.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* SEO Content Sections */}
+            <section className="py-16 bg-white border-t border-brand-border">
+                <div className="max-w-4xl mx-auto px-4 space-y-16">
+                    <div>
+                        <h2 className="text-2xl md:text-3xl font-bold text-brand-dark mb-4">Convert Image to CSV Online</h2>
+                        <p className="text-brand-muted leading-relaxed text-lg">
+                            Need to digitize a printed table? Our <strong>Image to CSV converter</strong> makes it simple. Just upload your image (JPG, PNG, or Screenshot), and our AI will detect the rows and columns, converting them into an editable CSV file. It handles complex layouts, merged cells, and handwriting with impressive accuracy.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h2 className="text-2xl md:text-3xl font-bold text-brand-dark mb-4">Extract Tables from Photos</h2>
+                        <p className="text-brand-muted leading-relaxed text-lg">
+                            Stop manual data entry from <strong>receipts, invoices, and scanned documents</strong>. PicToCSV acts as a powerful table extractor. Take a photo of your document, and we'll pull out the data line by line. Perfect for accounting, research, and data processing tasks where accuracy matters.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h2 className="text-2xl md:text-3xl font-bold text-brand-dark mb-4">Image to Excel & Spreadsheet Converter</h2>
+                        <p className="text-brand-muted leading-relaxed text-lg">
+                            We don't just stop at CSV. You can convert your <strong>images directly to Excel (XLSX)</strong> or copy the data straight into Google Sheets. Whether it's a financial report, a schedule, or a price list, get it into your favorite spreadsheet software instantly.
                         </p>
                     </div>
                 </div>
